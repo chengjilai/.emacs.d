@@ -17,5 +17,19 @@
 (setq viper-mode t)
 (require 'viper)
 (define-key viper-vi-basic-map (kbd "SPC") 'execute-extended-command)
+(define-key viper-vi-global-user-map (kbd "+") 'global-text-scale-adjust)
+(define-key viper-vi-global-user-map (kbd "-") 'global-text-scale-adjust)
 (setq viper-insert-state-cursor-color "#ffaa00")
 (with-eval-after-load 'viper (add-to-list 'viper-vi-state-mode-list 'dired-mode) (setq viper-emacs-state-mode-list (delq 'dired-mode viper-emacs-state-mode-list)))
+(with-eval-after-load 'viper (add-to-list 'viper-vi-state-mode-list 'doc-view-mode) (setq viper-emacs-state-mode-list (delq 'doc-view-mode viper-emacs-state-mode-list)))
+(add-hook 'doc-view-mode-hook
+          (lambda ()
+            (viper-add-local-keys
+             'vi-state
+             '(("j" . doc-view-next-line-or-next-page)
+               ("k" . doc-view-previous-line-or-previous-page)
+               ("+" . doc-view-enlarge)
+               ("-" . doc-view-shrink)
+               ("G" . (lambda (arg) (interactive "P") (if arg (doc-view-goto-page (prefix-numeric-value arg)) (doc-view-last-page))))))))
+(setq doc-view-continuous t)
+(setq doc-view-pdfdraw-program "mutool")
